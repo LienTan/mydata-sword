@@ -58,6 +58,7 @@ if (process.env.APP_TYPE === 'site') {
 
 const serveUrlMap = {
   dev: 'http://192.168.1.100:8000',
+  test: 'http://test.mydata.com',
   prod: 'http://192.168.1.100:8000',
 };
  
@@ -90,6 +91,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },
+    // '/api': {
+    //   target: serveUrlMap['test'],
+    //   changeOrigin: true,
+    //   // pathRewrite: { '^/api': '' },
+    // },
   },
   ignoreMomentLocale: true,
   lessLoaderOptions: {
