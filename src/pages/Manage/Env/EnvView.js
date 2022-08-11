@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import Panel from '../../../components/Panel';
 import styles from '../../../layouts/Sword.less';
 import { ENV_DETAIL } from '../../../actions/env';
+import EnvEditableTable from './EnvEditableTable';
 
 const FormItem = Form.Item;
 
@@ -65,12 +66,18 @@ class EnvView extends PureComponent {
             <FormItem {...formItemLayout} label="前置路径">
               <span>{detail.envPrefix}</span>
             </FormItem>
-            {/* <FormItem {...formItemLayout} label="全局header参数">
-              <span>{detail.globalHeaders}</span>
+            <FormItem {...formItemLayout} label="全局Headers">
+              <EnvEditableTable
+                tableValues={detail.globalHeaders} 
+                readonly={true}
+              />
             </FormItem>
-            <FormItem {...formItemLayout} label="全局变量">
-              <span>{detail.globalParams}</span>
-            </FormItem> */}
+            <FormItem {...formItemLayout} label="全局Params">
+              <EnvEditableTable
+                tableValues={detail.globalParams} 
+                readonly={true}
+              />
+            </FormItem>
           </Card>
         </Form>
       </Panel>
