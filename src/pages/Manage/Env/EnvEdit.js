@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import Panel from '../../../components/Panel';
 import styles from '../../../layouts/Sword.less';
 import { ENV_DETAIL, ENV_SUBMIT } from '../../../actions/env';
+import EnvEditableTable from './EnvEditableTable';
 
 const FormItem = Form.Item;
 
@@ -13,6 +14,14 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class EnvEdit extends PureComponent {
+  constructor(props){
+    super(props);
+    this.state = {
+      globalHeaders: [],
+      globalParams: [],
+    };
+  }
+
   componentWillMount() {
     const {
       dispatch,
@@ -21,6 +30,32 @@ class EnvEdit extends PureComponent {
       },
     } = this.props;
     dispatch(ENV_DETAIL(id));
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    const {
+      env: { detail },
+    } = nextProps;
+
+    const {globalHeaders, globalParams} = detail;
+    
+    // if(!(this.state.globalHeaders && this.state.globalHeaders.length > 0)){
+    if(globalHeaders && globalHeaders.length > 0){
+      globalHeaders.filter((item, index, self) => {item.key = index});
+      this.setState({ 
+        globalHeaders: globalHeaders,
+      });
+    }
+    // }
+
+    // if(!(this.state.globalParams && this.state.globalParams.length > 0)){
+    if(globalParams && globalParams.length > 0){
+      globalParams.filter((item, index, self) => {item.key = index});
+      this.setState({ 
+        globalParams: globalParams,
+      });
+    }
+    // }
   }
 
   handleSubmit = e => {
@@ -38,10 +73,53 @@ class EnvEdit extends PureComponent {
           id,
           ...values,
         };
-        console.log(params);
+        params.globalHeaders = this.state.globalHeaders;
+        params.globalParams = this.state.globalParams;
         dispatch(ENV_SUBMIT(params));
       }
     });
+  };
+
+  handleSaveHeader = header => {
+    const newData = [...this.state.globalHeaders];
+    const index = newData.findIndex(item => header.key === item.key);
+    if (index > -1) {
+      const item = newData[index];
+      newData.splice(index, 1, {
+        ...item,
+        ...header,
+      });
+      this.setState({ globalHeaders: newData });
+    }else {
+      newData.push(header);
+      this.setState({ globalHeaders: newData });
+    }
+  };
+
+  handleDeleteHeader = key => {
+    const globalHeaders = [...this.state.globalHeaders];
+    this.setState({ globalHeaders: globalHeaders.filter(item => item.key !== key) });
+  };
+
+  handleSaveParam = param => {
+    const newData = [...this.state.globalParams];
+    const index = newData.findIndex(item => param.key === item.key);
+    if (index > -1) {
+      const item = newData[index];
+      newData.splice(index, 1, {
+        ...item,
+        ...param,
+      });
+      this.setState({ globalParams: newData });
+    }else {
+      newData.push(param);
+      this.setState({ globalParams: newData });
+    }
+  };
+
+  handleDeleteParam = key => {
+    const globalParams = [...this.state.globalParams];
+    this.setState({ globalParams: globalParams.filter(item => item.key !== key) });
   };
 
   render() {
@@ -95,28 +173,42 @@ class EnvEdit extends PureComponent {
                 initialValue: detail.envPrefix,
               })(<Input placeholder="请输入前置路径" />)}
             </FormItem>
-            {/* <FormItem {...formItemLayout} label="全局header参数">
+            <FormItem {...formItemLayout} label="全局Headers">
               {getFieldDecorator('globalHeaders', {
                 rules: [
                   {
-                    required: true,
+                    required: false,
                     message: '请输入全局header参数',
                   },
                 ],
                 initialValue: detail.globalHeaders,
-              })(<Input placeholder="请输入全局header参数" />)}
+              })(
+                // <Input placeholder="请输入全局header参数" />
+                <EnvEditableTable
+                  tableValues={this.state.globalHeaders}
+                  handleSave={this.handleSaveHeader}
+                  handleDelete={this.handleDeleteHeader}
+                />
+              )}
             </FormItem>
-            <FormItem {...formItemLayout} label="全局变量">
+            <FormItem {...formItemLayout} label="全局Params">
               {getFieldDecorator('globalParams', {
                 rules: [
                   {
-                    required: true,
+                    required: false,
                     message: '请输入全局变量',
                   },
                 ],
                 initialValue: detail.globalParams,
-              })(<Input placeholder="请输入全局变量" />)}
-            </FormItem> */}
+              })(
+                // <Input placeholder="请输入全局变量" />
+                <EnvEditableTable
+                  tableValues={this.state.globalParams}
+                  handleSave={this.handleSaveParam}
+                  handleDelete={this.handleDeleteParam}
+                />
+              )}
+            </FormItem>
           </Card>
         </Form>
       </Panel>

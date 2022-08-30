@@ -50,7 +50,7 @@ export default {
   'menu.account.logout': '退出登录',
 
   // -------------------- mydata --------------------
-  'menu.mydata_manage': '集成平台',
+  'menu.mydata_manage': '数据集成',
   'menu.mydata_manage.data': '数据管理',
   'menu.mydata_manage.api': 'API管理',
   'menu.mydata_manage.env': '环境管理',

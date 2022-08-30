@@ -58,6 +58,7 @@ if (process.env.APP_TYPE === 'site') {
 
 const serveUrlMap = {
   dev: 'http://192.168.1.100:8000',
+  test: 'http://demo.mydata.work',
   prod: 'http://192.168.1.100:8000',
 };
  
@@ -85,10 +86,15 @@ export default {
     '@antv/data-set': 'DataSet',
   },
   proxy: {
+    // '/api': {
+    //   target: serveUrlMap[SERVE_ENV],
+    //   changeOrigin: true,
+    //   pathRewrite: { '^/api': '' },
+    // },
     '/api': {
-      target: serveUrlMap[SERVE_ENV],
+      target: serveUrlMap['test'],
       changeOrigin: true,
-      pathRewrite: { '^/api': '' },
+      // pathRewrite: { '^/api': '' },
     },
   },
   ignoreMomentLocale: true,
