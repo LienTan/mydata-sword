@@ -27,13 +27,13 @@ const links = [
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 2021 SpringBlade{' '}
+    Copyright <Icon type="copyright" /> 2022 Tan Lien{' '}
     <a
       key="github"
       title="git"
       target="_blank"
       rel="noopener noreferrer"
-      href="https://gitee.com/smallc/SpringBlade"
+      href="https://gitee.com/lientan/mydata-blade"
     >
       <Icon type="github" />{' '}
     </a>
@@ -51,11 +51,11 @@ const UserLayout = ({ children }) => (
         <div className={styles.header}>
           <Link to="/">
             <img alt="logo" className={styles.logo} src={logo} />
-            <span className={styles.title}>Sword 企业级开发平台</span>
+            <span className={styles.title}>MyData 数据集成平台</span>
           </Link>
         </div>
         <div className={styles.desc}>
-          Sword是SpringBlade前端UI项目，基于react 、ant design、umi、dva等流行技术栈。
+          MyData是以数据资产化为指导思想的数据平台，v1版本提供数据集成服务。
         </div>
       </div>
       {children}
