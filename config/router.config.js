@@ -305,6 +305,16 @@ export default [
             ],
           },
           {
+            path: '/manage/app',
+            routes: [
+              { path: '/manage/app', redirect: '/manage/app/list' },
+              { path: '/manage/app/list', component: './Manage/App/App' },
+              { path: '/manage/app/add', component: './Manage/App/AppAdd' },
+              { path: '/manage/app/edit/:id', component: './Manage/App/AppEdit' },
+              { path: '/manage/app/view/:id', component: './Manage/App/AppView' },
+            ],
+          },
+          {
             path: '/manage/api',
             routes: [
               { path: '/manage/api', redirect: '/manage/api/list' },

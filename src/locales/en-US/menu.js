@@ -52,6 +52,7 @@ export default {
   // -------------------- mydata --------------------
   'menu.mydata_manage': '数据集成',
   'menu.mydata_manage.data': '数据管理',
+  'menu.mydata_manage.app': '应用管理',
   'menu.mydata_manage.api': 'API管理',
   'menu.mydata_manage.env': '环境管理',
   'menu.mydata_manage.task': '任务管理',
