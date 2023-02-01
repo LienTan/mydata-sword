@@ -79,6 +79,14 @@ class Api extends PureComponent {
 
     const columns = [
       {
+        title: '应用',
+        dataIndex: 'appId',
+        render: (text, record) => {
+          const {appCode, appName} = record;
+          return `${appName} (${appCode})`;
+        },
+      },
+      {
         title: 'API名称',
         dataIndex: 'apiName',
       },

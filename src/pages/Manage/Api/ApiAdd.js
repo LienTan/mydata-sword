@@ -3,22 +3,28 @@ import { Form, Input, Card, Button, Radio } from 'antd';
 import { connect } from 'dva';
 import Panel from '../../../components/Panel';
 import styles from '../../../layouts/Sword.less';
-import { API_SUBMIT } from '../../../actions/api';
+import { API_SUBMIT, API_INIT } from '../../../actions/api';
 import ApiEditableTable from './ApiEditableTable';
 
 const FormItem = Form.Item;
 
-@connect(({ loading }) => ({
+@connect(({ api, loading }) => ({
+  api,
   submitting: loading.effects['api/submit'],
 }))
 @Form.create()
 class ApiAdd extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       reqHeaders: [],
       reqParams: [],
     };
+  }
+
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch(API_INIT());
   }
 
   handleSubmit = e => {
@@ -47,7 +53,7 @@ class ApiAdd extends PureComponent {
         ...header,
       });
       this.setState({ reqHeaders: newData });
-    }else {
+    } else {
       newData.push(header);
       this.setState({ reqHeaders: newData });
     }
@@ -68,7 +74,7 @@ class ApiAdd extends PureComponent {
         ...param,
       });
       this.setState({ reqParams: newData });
-    }else {
+    } else {
       newData.push(param);
       this.setState({ reqParams: newData });
     }
@@ -83,6 +89,9 @@ class ApiAdd extends PureComponent {
     const {
       form: { getFieldDecorator },
       submitting,
+      api: {
+        init: { appList }
+      }
     } = this.props;
 
     const formItemLayout = {
@@ -107,6 +116,24 @@ class ApiAdd extends PureComponent {
       <Panel title="新增" back="/manage/api" action={action}>
         <Form hideRequiredMark style={{ marginTop: 8 }}>
           <Card className={styles.card} bordered={false}>
+            <FormItem {...formItemLayout} label="所属应用">
+              {getFieldDecorator('appId', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择所属应用',
+                  },
+                ],
+              })(
+                <Select allowClear placeholder="请选择所属应用">
+                  {appList.map(e => (
+                    <Select.Option key={e.id} value={e.id}>
+                      {e.appName} ({e.appCode})
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
+            </FormItem>
             <FormItem {...formItemLayout} label="名称">
               {getFieldDecorator('apiName', {
                 rules: [
@@ -128,8 +155,8 @@ class ApiAdd extends PureComponent {
                 initialValue: 1,
               })(
                 <Radio.Group>
-                <Radio.Button value={1}>提供数据</Radio.Button>
-                <Radio.Button value={2}>消费数据</Radio.Button>
+                  <Radio.Button value={1}>提供数据</Radio.Button>
+                  <Radio.Button value={2}>消费数据</Radio.Button>
                 </Radio.Group>
               )}
             </FormItem>

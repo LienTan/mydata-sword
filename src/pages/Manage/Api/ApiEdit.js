@@ -3,7 +3,7 @@ import { Form, Input, Card, Button, Radio } from 'antd';
 import { connect } from 'dva';
 import Panel from '../../../components/Panel';
 import styles from '../../../layouts/Sword.less';
-import { API_DETAIL, API_SUBMIT } from '../../../actions/api';
+import { API_DETAIL, API_SUBMIT, API_INIT } from '../../../actions/api';
 import ApiEditableTable from './ApiEditableTable';
 
 const FormItem = Form.Item;
@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class ApiEdit extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       reqHeaders: [],
@@ -29,29 +29,30 @@ class ApiEdit extends PureComponent {
         params: { id },
       },
     } = this.props;
+    dispatch(API_INIT());
     dispatch(API_DETAIL(id));
   }
-  
+
   componentWillReceiveProps(nextProps) {
     const {
       api: { detail },
     } = nextProps;
 
-    const {reqHeaders, reqParams} = detail;
-    
+    const { reqHeaders, reqParams } = detail;
+
     // if(!(this.state.reqHeaders && this.state.reqHeaders.length > 0)){
-    if(reqHeaders && reqHeaders.length > 0){
-      reqHeaders.filter((item, index, self) => {item.key = index});
-      this.setState({ 
+    if (reqHeaders && reqHeaders.length > 0) {
+      reqHeaders.filter((item, index, self) => { item.key = index });
+      this.setState({
         reqHeaders: reqHeaders,
       });
     }
     // }
 
     // if(!(this.state.reqParams && this.state.reqParams.length > 0)){
-    if(reqParams && reqParams.length > 0){
-      reqParams.filter((item, index, self) => {item.key = index});
-      this.setState({ 
+    if (reqParams && reqParams.length > 0) {
+      reqParams.filter((item, index, self) => { item.key = index });
+      this.setState({
         reqParams: reqParams,
       });
     }
@@ -91,7 +92,7 @@ class ApiEdit extends PureComponent {
       // });
       newData[index] = header;
       this.setState({ reqHeaders: newData });
-    }else {
+    } else {
       newData.push(header);
       this.setState({ reqHeaders: newData });
     }
@@ -112,7 +113,7 @@ class ApiEdit extends PureComponent {
         ...param,
       });
       this.setState({ reqParams: newData });
-    }else {
+    } else {
       newData.push(param);
       this.setState({ reqParams: newData });
     }
@@ -128,6 +129,9 @@ class ApiEdit extends PureComponent {
       form: { getFieldDecorator },
       api: { detail },
       submitting,
+      api: {
+        init: { appList }
+      }
     } = this.props;
 
     const formItemLayout = {
@@ -152,7 +156,26 @@ class ApiEdit extends PureComponent {
       <Panel title="修改" back="/manage/api" action={action}>
         <Form hideRequiredMark style={{ marginTop: 8 }}>
           <Card className={styles.card} bordered={false}>
-          <FormItem {...formItemLayout} label="名称">
+            <FormItem {...formItemLayout} label="所属应用">
+              {getFieldDecorator('appId', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择所属应用',
+                  },
+                ],
+                initialValue: detail.appId,
+              })(
+                <Select allowClear placeholder="请选择所属应用">
+                  {appList.map(e => (
+                    <Select.Option key={e.id} value={e.id}>
+                      {e.appName} ({e.appCode})
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout} label="名称">
               {getFieldDecorator('apiName', {
                 rules: [
                   {
