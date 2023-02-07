@@ -6,6 +6,7 @@ import styles from '../../../layouts/Sword.less';
 import { TASK_SUBMIT, TASK_INIT, TASK_SUBSCRIBED, TASK_TYPE_PRODUCER } from '../../../actions/task';
 import TaskFieldMappingTable from './TaskFieldMappingTable';
 import { dataFields } from '../../../services/data';
+import TaskDataFilterTable from './TaskDataFilterTable';
 
 const FormItem = Form.Item;
 
@@ -29,6 +30,7 @@ class TaskAdd extends PureComponent {
 
       dataFieldList: [],
       fieldMappings: {},
+      filters: [],
 
       isShowSubscribed: false,
       isShowTaskPeriod: true,
@@ -160,6 +162,27 @@ class TaskAdd extends PureComponent {
       // 不订阅
       this.setState({ isShowTaskPeriod: true });
     }
+  };
+
+  handleSaveFilter = filter => {
+    const newData = [...this.state.filters];
+    const index = newData.findIndex(item => field.key === item.key);
+    if (index > -1) {
+      const item = newData[index];
+      newData.splice(index, 1, {
+        ...item,
+        ...field,
+      });
+      this.setState({ filters: newData });
+    }else {
+      newData.push(field);
+      this.setState({ filters: newData });
+    }
+  };
+
+  handleDeleteFilter = key => {
+    const filters = [...this.state.filters];
+    this.setState({ filters: filters.filter(item => item.key !== key) });
   };
 
   render() {
@@ -322,6 +345,13 @@ class TaskAdd extends PureComponent {
                 <TaskFieldMappingTable
                   dataFieldList={this.state.dataFieldList}
                   handleSave={this.handleSaveMapping} 
+                />
+            </FormItem>
+            <FormItem {...formItemLayout} label="数据过滤条件">
+                <TaskDataFilterTable
+                  dataFieldList={this.state.filters}
+                  handleSave={this.handleSaveFilter} 
+                  handleDelete={this.handleDeleteFilter}
                 />
             </FormItem>
           </Card>
