@@ -140,6 +140,12 @@ class TaskView extends PureComponent {
                   initFieldMappings={detail.fieldMapping}
                 />
             </FormItem>
+            <FormItem {...formItemLayout} label="最后执行时间">
+              <span>{detail.lastRunTime}</span>
+            </FormItem>
+            <FormItem {...formItemLayout} label="最后成功时间">
+              <span>{detail.lastSuccessTime}</span>
+            </FormItem>
           </Card>
         </Form>
       </Panel>
