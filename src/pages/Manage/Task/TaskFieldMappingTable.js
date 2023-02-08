@@ -1,4 +1,4 @@
-import { Form, Input, Button, Table, Select,Popconfirm } from 'antd';
+import { Form, Input, Button, Table, Select, Popconfirm } from 'antd';
 import style from './StandardData.less';
 
 const EditableContext = React.createContext();
@@ -10,11 +10,11 @@ const EditableRow = ({ form, index, ...props }) => (
 const EditableFormRow = Form.create()(EditableRow);
 
 class EditableCell extends React.Component {
-//   state = {
-//     editing: false,
-//   };
+  //   state = {
+  //     editing: false,
+  //   };
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = { editing: props.editable };
   }
@@ -59,8 +59,8 @@ class EditableCell extends React.Component {
           ],
           initialValue: record[dataIndex],
         })(
-        // <Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />
-        this.getInput()
+          // <Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />
+          this.getInput()
         )}
       </Form.Item>
     ) : (
@@ -98,13 +98,13 @@ class EditableCell extends React.Component {
 }
 
 class TaskFieldMappingTable extends React.Component {
-  
-  constructor(props){
+
+  constructor(props) {
     super(props);
-    this.state = { 
-      fieldMappings:[], 
-      count: 0, 
-      readonly : props.readonly ? props.readonly : false
+    this.state = {
+      fieldMappings: [],
+      count: 0,
+      readonly: props.readonly ? props.readonly : false
     };
 
     this.columns = [
@@ -157,15 +157,15 @@ class TaskFieldMappingTable extends React.Component {
     const fieldMappings = [];
 
     const { dataFieldList, initFieldMappings } = nextProps;
-    if(dataFieldList){
+    if (dataFieldList) {
       dataFieldList.map(dataField => {
-        const mapping = { 
+        const mapping = {
           key: dataField.fieldCode
           , dataFieldCode: dataField.fieldCode
           , dataFieldName: dataField.fieldName
           , apiFieldCode: (initFieldMappings ? (initFieldMappings[dataField.fieldCode] ? initFieldMappings[dataField.fieldCode] : null) : null)
         };
-        
+
         fieldMappings.push(mapping);
       });
     }
@@ -173,12 +173,12 @@ class TaskFieldMappingTable extends React.Component {
     this.setState({
       fieldMappings: fieldMappings,
       count: fieldMappings.length,
-      readonly : nextProps.readonly ? nextProps.readonly : false,
+      readonly: nextProps.readonly ? nextProps.readonly : false,
     });
   }
 
-  componentWillUnmount(){
-    this.setState({ fieldMappings:[], count: 0 });
+  componentWillUnmount() {
+    this.setState({ fieldMappings: [], count: 0 });
   }
 
   // handleAdd = () => {
@@ -227,7 +227,7 @@ class TaskFieldMappingTable extends React.Component {
         cell: EditableCell,
       },
     };
-    
+
     const columns = this.columns.map(col => {
       if (!col.editable) {
         return col;
@@ -244,7 +244,7 @@ class TaskFieldMappingTable extends React.Component {
         }),
       };
     });
-    
+
     return (
       <div>
         {/* <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16, display: this.state.readonly ? 'none' : 'block' }}>
@@ -252,7 +252,7 @@ class TaskFieldMappingTable extends React.Component {
         </Button> */}
         <Table
           components={components}
-          rowClassName={() => {style.editableRow}}
+          rowClassName={() => { style.editableRow }}
           bordered
           dataSource={this.state.fieldMappings}
           columns={columns}

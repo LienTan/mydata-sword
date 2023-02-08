@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class AppEdit extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
   }
 

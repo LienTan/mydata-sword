@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class AppAdd extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
   }
 

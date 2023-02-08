@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class EnvEdit extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       globalHeaders: [],
@@ -31,27 +31,27 @@ class EnvEdit extends PureComponent {
     } = this.props;
     dispatch(ENV_DETAIL(id));
   }
-  
+
   componentWillReceiveProps(nextProps) {
     const {
       env: { detail },
     } = nextProps;
 
-    const {globalHeaders, globalParams} = detail;
-    
+    const { globalHeaders, globalParams } = detail;
+
     // if(!(this.state.globalHeaders && this.state.globalHeaders.length > 0)){
-    if(globalHeaders && globalHeaders.length > 0){
-      globalHeaders.filter((item, index, self) => {item.key = index});
-      this.setState({ 
+    if (globalHeaders && globalHeaders.length > 0) {
+      globalHeaders.filter((item, index, self) => { item.key = index });
+      this.setState({
         globalHeaders: globalHeaders,
       });
     }
     // }
 
     // if(!(this.state.globalParams && this.state.globalParams.length > 0)){
-    if(globalParams && globalParams.length > 0){
-      globalParams.filter((item, index, self) => {item.key = index});
-      this.setState({ 
+    if (globalParams && globalParams.length > 0) {
+      globalParams.filter((item, index, self) => { item.key = index });
+      this.setState({
         globalParams: globalParams,
       });
     }
@@ -90,7 +90,7 @@ class EnvEdit extends PureComponent {
         ...header,
       });
       this.setState({ globalHeaders: newData });
-    }else {
+    } else {
       newData.push(header);
       this.setState({ globalHeaders: newData });
     }
@@ -111,7 +111,7 @@ class EnvEdit extends PureComponent {
         ...param,
       });
       this.setState({ globalParams: newData });
-    }else {
+    } else {
       newData.push(param);
       this.setState({ globalParams: newData });
     }

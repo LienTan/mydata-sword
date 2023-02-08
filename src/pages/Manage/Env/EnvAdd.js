@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class EnvAdd extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       globalHeaders: [],
@@ -47,7 +47,7 @@ class EnvAdd extends PureComponent {
         ...header,
       });
       this.setState({ globalHeaders: newData });
-    }else {
+    } else {
       newData.push(header);
       this.setState({ globalHeaders: newData });
     }
@@ -68,7 +68,7 @@ class EnvAdd extends PureComponent {
         ...param,
       });
       this.setState({ globalParams: newData });
-    }else {
+    } else {
       newData.push(param);
       this.setState({ globalParams: newData });
     }

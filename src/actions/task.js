@@ -41,7 +41,7 @@ export function TASK_REMOVE(payload) {
   };
 }
 
-export function TASK_INIT(){
+export function TASK_INIT() {
   return {
     type: `${TASK_NAMESPACE}/fetchInit`,
     payload: {},

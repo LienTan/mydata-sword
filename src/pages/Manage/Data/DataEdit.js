@@ -14,9 +14,9 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class DataEdit extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state = {dataFields:[]};
+    this.state = { dataFields: [] };
   }
 
   componentWillMount() {
@@ -28,9 +28,9 @@ class DataEdit extends PureComponent {
     } = this.props;
     dispatch(DATA_DETAIL(id));
   }
-  
+
   componentWillReceiveProps(nextProps) {
-    if(this.state.dataFields && this.state.dataFields.length > 0){
+    if (this.state.dataFields && this.state.dataFields.length > 0) {
       return;
     }
 
@@ -38,9 +38,10 @@ class DataEdit extends PureComponent {
       data: { detail },
     } = nextProps;
 
-    this.setState({ 
-        dataFields: detail.dataFields ? detail.dataFields : [],
-        count: detail.dataFields ? detail.dataFields.length : 0 });
+    this.setState({
+      dataFields: detail.dataFields ? detail.dataFields : [],
+      count: detail.dataFields ? detail.dataFields.length : 0
+    });
   }
 
   handleSubmit = e => {
@@ -74,7 +75,7 @@ class DataEdit extends PureComponent {
         ...field,
       });
       this.setState({ dataFields: newData });
-    }else {
+    } else {
       newData.push(field);
       this.setState({ dataFields: newData });
     }
@@ -139,8 +140,8 @@ class DataEdit extends PureComponent {
             </FormItem>
             <FormItem {...formItemLayout} label="字段管理">
               <EditableTable
-                dataFields={this.state.dataFields} 
-                handleSave={this.handleSaveField} 
+                dataFields={this.state.dataFields}
+                handleSave={this.handleSaveField}
                 handleDelete={this.handleDeleteField}
               />
             </FormItem>

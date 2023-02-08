@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class TaskView extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       initStatus: false,
@@ -27,7 +27,7 @@ class TaskView extends PureComponent {
       fieldMappings: {},
     };
   }
-  
+
   componentWillMount() {
     const {
       dispatch,
@@ -45,26 +45,26 @@ class TaskView extends PureComponent {
 
     const { initStatus, apiUrl, opType } = this.state;
 
-    if(!initStatus && detail.id){
+    if (!initStatus && detail.id) {
       this.loadDataFieldList(detail.dataId);
       this.setState({
         fieldMappings: detail.fieldMapping,
       });
     }
 
-    if(!apiUrl){
-      this.setState({apiUrl : detail.apiUrl});
+    if (!apiUrl) {
+      this.setState({ apiUrl: detail.apiUrl });
     }
-    if(!opType){
-      this.setState({opType : detail.opType == 1 ? "提供数据" : "消费数据"});
+    if (!opType) {
+      this.setState({ opType: detail.opType == 1 ? "提供数据" : "消费数据" });
     }
-    
+
   }
 
   async loadDataFieldList(dataId) {
-    const dataFieldResponse = await dataFields({dataId: dataId});
-    if(dataFieldResponse.success){
-      this.setState({dataFieldList: dataFieldResponse.data});
+    const dataFieldResponse = await dataFields({ dataId: dataId });
+    if (dataFieldResponse.success) {
+      this.setState({ dataFieldList: dataFieldResponse.data });
     }
   }
 
@@ -135,10 +135,10 @@ class TaskView extends PureComponent {
             </FormItem>
             <FormItem {...formItemLayout} label="字段映射">
               <TaskFieldMappingTable
-                  readonly={true}
-                  dataFieldList={this.state.dataFieldList}
-                  initFieldMappings={detail.fieldMapping}
-                />
+                readonly={true}
+                dataFieldList={this.state.dataFieldList}
+                initFieldMappings={detail.fieldMapping}
+              />
             </FormItem>
             <FormItem {...formItemLayout} label="最后执行时间">
               <span>{detail.lastRunTime}</span>

@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class Task extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -41,7 +41,7 @@ class Task extends PureComponent {
           message.error(response.msg || '启动失败');
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -63,7 +63,7 @@ class Task extends PureComponent {
           message.error(response.msg || '任务停止失败！');
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -102,7 +102,7 @@ class Task extends PureComponent {
   renderActionButton = (keys, rows) => (
     <Fragment key="copy">
       <Divider type="vertical" />
-      <a 
+      <a
         onClick={() => {
           this.showLogList(rows[0]);
         }}
@@ -115,17 +115,17 @@ class Task extends PureComponent {
   showLogList = params => {
     const { dispatch } = this.props;
     const { id } = params;
-    dispatch(TASK_LOG_LIST({taskId: id}));
-    this.setState({logModalVisible: true, currentTask : params});
+    dispatch(TASK_LOG_LIST({ taskId: id }));
+    this.setState({ logModalVisible: true, currentTask: params });
   };
   handleSearchLog = (pagination, filters, sorter) => {
     const { dispatch } = this.props;
     const { currentTask } = this.state;
-    dispatch(TASK_LOG_LIST({...pagination, taskId: currentTask.id}));
+    dispatch(TASK_LOG_LIST({ ...pagination, taskId: currentTask.id }));
   };
 
   closeLogList = () => {
-    this.setState({logModalVisible: false});
+    this.setState({ logModalVisible: false });
   };
 
   render() {
@@ -181,7 +181,7 @@ class Task extends PureComponent {
       },
       {
         title: '最后执行时间<br/>/最后成功时间',
-        render: (text,redord, index) => {
+        render: (text, redord, index) => {
           let timeStr = record.lastRunTime + "<br/>" + record.lastSuccessTime;
           return timeStr;
         },
@@ -195,18 +195,18 @@ class Task extends PureComponent {
         dataIndex: 'taskStatus',
         width: 120,
         render: (text, record, index) => {
-          const {id, taskStatus} = record;
+          const { id, taskStatus } = record;
           let color, status;
-          if(taskStatus == 0){
+          if (taskStatus == 0) {
             color = 'lightgray';
             status = '停止';
-          }else if(taskStatus == 1){
+          } else if (taskStatus == 1) {
             color = 'green';
             status = '运行';
-          }else if(taskStatus == 2){
+          } else if (taskStatus == 2) {
             color = 'red';
             status = '异常';
-          }else{
+          } else {
             color = 'black';
             status = '--';
           }
@@ -215,15 +215,15 @@ class Task extends PureComponent {
             <Divider type="vertical" />
             {
               taskStatus != 1 ? (
-                <a 
-                onClick={() => {
-                  this.handleStart(id);
-                }}
-              >
-                启动
-              </a>
+                <a
+                  onClick={() => {
+                    this.handleStart(id);
+                  }}
+                >
+                  启动
+                </a>
               ) : (
-                <a 
+                <a
                   onClick={() => {
                     this.handleStop(id);
                   }}
@@ -301,7 +301,7 @@ class Task extends PureComponent {
             dataSource={logs.list}
             pagination={logs.pagination}
             onChange={this.handleSearchLog}
-            expandedRowRender={record => <div dangerouslySetInnerHTML={{__html: `${record.taskDetail.replaceAll('\n', '</br>')}`,}}></div>}
+            expandedRowRender={record => <div dangerouslySetInnerHTML={{ __html: `${record.taskDetail.replaceAll('\n', '</br>')}`, }}></div>}
 
           />
         </Modal>
