@@ -180,11 +180,14 @@ class Task extends PureComponent {
         },
       },
       {
-        title: '最后执行时间<br/>/最后成功时间',
-        render: (text, redord, index) => {
-          let timeStr = record.lastRunTime + "<br/>" + record.lastSuccessTime;
-          return timeStr;
-        },
+        title: '最后执行时间',
+        dataIndex: 'lastRunTime',
+        width: 150,
+      },
+      {
+        title: '最后成功时间',
+        dataIndex: 'lastSuccessTime',
+        width: 150,
       },
       // {
       //   title: '字段映射',
