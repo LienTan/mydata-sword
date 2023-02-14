@@ -92,9 +92,9 @@ export default {
     //   pathRewrite: { '^/api': '' },
     // },
     '/api': {
-      target: serveUrlMap['test'],
+      target: serveUrlMap['dev'],
       changeOrigin: true,
-      // pathRewrite: { '^/api': '' },
+      pathRewrite: { '^/api': '' },
     },
   },
   ignoreMomentLocale: true,
