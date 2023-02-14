@@ -57,7 +57,7 @@ if (process.env.APP_TYPE === 'site') {
 }
 
 const serveUrlMap = {
-  dev: 'http://192.168.1.100:8000',
+  dev: 'http://dev.mydata.com:8000',
   test: 'http://demo.mydata.work',
   prod: 'http://192.168.1.100:8000',
 };
