@@ -27,8 +27,13 @@ class App extends PureComponent {
     return (
       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
         <Col md={6} sm={24}>
-          <FormItem label="查询名称">
-            {getFieldDecorator('appName')(<Input placeholder="查询名称" />)}
+          <FormItem label="编号">
+            {getFieldDecorator('appCode')(<Input placeholder="编号" />)}
+          </FormItem>
+        </Col>
+        <Col md={6} sm={24}>
+          <FormItem label="名称">
+            {getFieldDecorator('appName')(<Input placeholder="名称" />)}
           </FormItem>
         </Col>
         <Col>
