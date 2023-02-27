@@ -1,20 +1,16 @@
 import { message } from 'antd';
 import router from 'umi/router';
-import { API_NAMESPACE } from '../actions/api';
-import { list, submit, detail, remove } from '../services/md_api';
-import { select as appSelect } from '../services/app';
+import { APP_NAMESPACE } from '../actions/app';
+import { list, submit, detail, remove } from '../services/app';
 
 export default {
-  namespace: API_NAMESPACE,
+  namespace: APP_NAMESPACE,
   state: {
     data: {
       list: [],
       pagination: false,
     },
     detail: {},
-    init: {
-      appList: [],
-    },
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -54,7 +50,7 @@ export default {
       const response = yield call(submit, payload);
       if (response.success) {
         message.success('提交成功');
-        router.push('/manage/api');
+        router.push('/manage/app');
       }
     },
     *remove({ payload }, { call }) {
@@ -65,17 +61,6 @@ export default {
       const response = yield call(remove, { ids: keys });
       if (response.success) {
         success();
-      }
-    },
-    *fetchInit({ payload }, { call, put }) {
-      const responseApp = yield call(appSelect, payload);
-      if (responseApp.success) {
-        yield put({
-          type: 'saveInit',
-          payload: {
-            appList: responseApp.data,
-          },
-        });
       }
     },
   },
@@ -96,12 +81,6 @@ export default {
       return {
         ...state,
         detail: {},
-      };
-    },
-    saveInit(state, action) {
-      return {
-        ...state,
-        init: action.payload,
       };
     },
   },

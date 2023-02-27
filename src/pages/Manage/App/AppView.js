@@ -4,16 +4,15 @@ import { Form, Card, Button } from 'antd';
 import { connect } from 'dva';
 import Panel from '../../../components/Panel';
 import styles from '../../../layouts/Sword.less';
-import { DATA_DETAIL } from '../../../actions/data';
-import EditableTable from './EditableTable';
+import { APP_DETAIL } from '../../../actions/app';
 
 const FormItem = Form.Item;
 
-@connect(({ data }) => ({
-  data,
+@connect(({ app }) => ({
+  app,
 }))
 @Form.create()
-class DataView extends PureComponent {
+class AppView extends PureComponent {
   componentWillMount() {
     const {
       dispatch,
@@ -21,7 +20,7 @@ class DataView extends PureComponent {
         params: { id },
       },
     } = this.props;
-    dispatch(DATA_DETAIL(id));
+    dispatch(APP_DETAIL(id));
   }
 
   handleEdit = () => {
@@ -30,12 +29,12 @@ class DataView extends PureComponent {
         params: { id },
       },
     } = this.props;
-    router.push(`/manage/data/edit/${id}`);
+    router.push(`/manage/app/edit/${id}`);
   };
 
   render() {
     const {
-      data: { detail },
+      app: { detail },
     } = this.props;
 
     const formItemLayout = {
@@ -57,23 +56,14 @@ class DataView extends PureComponent {
     );
 
     return (
-      <Panel title="查看" back="/manage/data" action={action}>
+      <Panel title="查看" back="/manage/app" action={action}>
         <Form hideRequiredMark style={{ marginTop: 8 }}>
           <Card className={styles.card} bordered={false}>
-            <FormItem {...formItemLayout} label="数据编号">
-              <span>{detail.dataCode}</span>
+            <FormItem {...formItemLayout} label="应用编号">
+              <span>{detail.appCode}</span>
             </FormItem>
-            <FormItem {...formItemLayout} label="数据名称">
-              <span>{detail.dataName}</span>
-            </FormItem>
-            <FormItem {...formItemLayout} label="数据量">
-              <span>{detail.dataCount}</span>
-            </FormItem>
-            <FormItem {...formItemLayout} label="字段列表">
-              <EditableTable
-                dataFields={detail.dataFields}
-                readonly={true}
-              />
+            <FormItem {...formItemLayout} label="应用名称">
+              <span>{detail.appName}</span>
             </FormItem>
           </Card>
         </Form>
@@ -81,4 +71,4 @@ class DataView extends PureComponent {
     );
   }
 }
-export default DataView;
+export default AppView;

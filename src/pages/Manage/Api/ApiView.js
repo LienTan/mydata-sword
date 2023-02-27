@@ -60,6 +60,9 @@ class ApiView extends PureComponent {
       <Panel title="查看" back="/manage/api" action={action}>
         <Form hideRequiredMark style={{ marginTop: 8 }}>
           <Card className={styles.card} bordered={false}>
+            <FormItem {...formItemLayout} label="所属应用">
+              {detail.appName} ({detail.appCode})
+            </FormItem>
             <FormItem {...formItemLayout} label="名称">
               <span>{detail.apiName}</span>
             </FormItem>
@@ -77,13 +80,13 @@ class ApiView extends PureComponent {
             </FormItem>
             <FormItem {...formItemLayout} label="Headers">
               <ApiEditableTable
-                tableValues={detail.reqHeaders} 
+                tableValues={detail.reqHeaders}
                 readonly={true}
               />
             </FormItem>
             <FormItem {...formItemLayout} label="Params">
               <ApiEditableTable
-                tableValues={detail.reqParams} 
+                tableValues={detail.reqParams}
                 readonly={true}
               />
             </FormItem>

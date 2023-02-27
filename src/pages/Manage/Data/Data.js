@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class Data extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -62,17 +62,17 @@ class Data extends PureComponent {
   showBizData = params => {
     const { dispatch } = this.props;
     const { id } = params;
-    dispatch(BIZ_FILE_LIST({dataId : id}));
-    dispatch(BIZ_DATA_LIST({dataId : id}));
-    this.setState({bizDataModalVisible: true, currentData : params});
+    dispatch(BIZ_FILE_LIST({ dataId: id }));
+    dispatch(BIZ_DATA_LIST({ dataId: id }));
+    this.setState({ bizDataModalVisible: true, currentData: params });
   };
   handleSearchBizData = (pagination, filters, sorter) => {
     const { dispatch } = this.props;
     const { currentData } = this.state;
-    dispatch(BIZ_DATA_LIST({...pagination, dataId: currentData.id}));
+    dispatch(BIZ_DATA_LIST({ ...pagination, dataId: currentData.id }));
   };
   closeBizData = () => {
-    this.setState({bizDataModalVisible: false, currentData : {}});
+    this.setState({ bizDataModalVisible: false, currentData: {} });
   };
 
   render() {
@@ -99,15 +99,15 @@ class Data extends PureComponent {
         title: '数据量',
         dataIndex: 'dataCount',
         render: (text, record, index) => {
-          const {id} = record;
-          return <a onClick={()=>{this.showBizData(record)}}>{text}</a>
+          const { id } = record;
+          return <a onClick={() => { this.showBizData(record) }}>{text}</a>
         },
       },
     ];
 
     let bizDataColumns = [];
-    if(bizField){
-      for(let i = 0; i < bizField.length; i++){
+    if (bizField) {
+      for (let i = 0; i < bizField.length; i++) {
         let field = bizField[i];
         bizDataColumns.push({
           title: field.fieldName,

@@ -34,3 +34,10 @@ export function API_REMOVE(payload) {
     payload,
   };
 }
+
+export function API_INIT() {
+  return {
+    type: `${API_NAMESPACE}/fetchInit`,
+    payload: {},
+  };
+}

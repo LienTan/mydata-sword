@@ -29,7 +29,7 @@ class Env extends PureComponent {
       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
         <Col md={6} sm={24}>
           <FormItem label="查询名称">
-            {getFieldDecorator('name')(<Input placeholder="查询名称" />)}
+            {getFieldDecorator('envName')(<Input placeholder="查询名称" />)}
           </FormItem>
         </Col>
         <Col>
@@ -56,7 +56,7 @@ class Env extends PureComponent {
       okType: 'danger',
       cancelText: '取消',
       async onOk() {
-        const response = await syncTask({id : id});
+        const response = await syncTask({ id: id });
         if (response.success) {
           message.success(response.msg);
           dispatch(ENV_LIST());
@@ -64,7 +64,7 @@ class Env extends PureComponent {
           message.error(response.msg || '更新任务失败！');
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -94,15 +94,15 @@ class Env extends PureComponent {
         title: '同步任务时间',
         dataIndex: 'syncTaskTime',
         render: (text, record, index) => {
-          const {id, syncTaskTime, updateTime} = record;
+          const { id, syncTaskTime, updateTime } = record;
           let color = 'green';
-          if(syncTaskTime == ""){
+          if (syncTaskTime == "") {
             color = 'gray'
           }
-          else 
-          if(syncTaskTime < updateTime){
-            color = 'red';
-          }
+          else
+            if (syncTaskTime < updateTime) {
+              color = 'red';
+            }
           return <>
             <Tag color={color}>{syncTaskTime}</Tag>
             <Divider type="vertical" />

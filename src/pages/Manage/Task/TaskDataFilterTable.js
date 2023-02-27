@@ -31,16 +31,31 @@ class EditableCell extends React.Component {
   save = e => {
     const { record, handleSave } = this.props;
     this.form.validateFields((error, values) => {
-      if (error && error[e.currentTarget.id]) {
+      if (error && error[e.currentTarget.key]) {
         return;
       }
       this.toggleEdit();
-      handleSave(record.key, this.props.dataIndex, e.currentTarget.value);
+      handleSave(record.key, this.props.dataIndex, e.target.value);
       // ----------------------------------------------------------
     });
   };
 
+  handleSelectOp = (op) => {
+    const { record } = this.props;
+    record.op = op;
+  }
+
   getInput = () => {
+    if (this.props.inputType === 'select') {
+      return <Select ref={node => (this.input = node)} onChange={this.handleSelectOp} placeholder={`请输入${this.props.title}`}>
+        <Select.Option value="=">=</Select.Option>
+        <Select.Option value="!=">!=</Select.Option>
+        <Select.Option value=">">&gt;</Select.Option>
+        <Select.Option value=">=">&gt;=</Select.Option>
+        <Select.Option value="<">&lt;</Select.Option>
+        <Select.Option value="<=">&lt;=</Select.Option>
+      </Select>;
+    }
     return <Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} placeholder={`请输入${this.props.title}`} />;
   };
 
@@ -53,13 +68,12 @@ class EditableCell extends React.Component {
         {form.getFieldDecorator(dataIndex, {
           rules: [
             {
-              required: false,
+              required: true,
               message: `请输入${title}`,
             },
           ],
           initialValue: record[dataIndex],
         })(
-          // <Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />
           this.getInput()
         )}
       </Form.Item>
@@ -97,109 +111,88 @@ class EditableCell extends React.Component {
   }
 }
 
-class TaskFieldMappingTable extends React.Component {
+class TaskDataFilterTable extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      fieldMappings: [],
+      filters: [],
       count: 0,
       readonly: props.readonly ? props.readonly : false
     };
 
     this.columns = [
       {
-        title: '数据字段编号',
-        dataIndex: 'dataFieldCode',
+        title: '条件名',
+        dataIndex: 'k',
         width: '25%',
-        editable: false,
-      },
-      {
-        title: '数据字段名称',
-        dataIndex: 'dataFieldName',
-        width: '25%',
-        editable: false,
-      },
-      {
-        title: '接口字段',
-        dataIndex: 'apiFieldCode',
-        width: '50%',
         editable: !this.state.readonly,
       },
-      // {
-      //   title: '是否标识',
-      //   dataIndex: 'isId',
-      //   width: '15%',
-      //   render: (text, record) => {
-      //     return record.isId == 1 ? "是" : "否";
-      //   },
-      //   editable: !this.state.readonly,
-      // },
+      {
+        title: '条件比较方式',
+        dataIndex: 'op',
+        width: '25%',
+        editable: !this.state.readonly,
+      },
+      {
+        title: '条件值',
+        dataIndex: 'v',
+        width: '25%',
+        editable: !this.state.readonly,
+      },
     ];
 
-    // if(!this.state.readonly){
-    //   this.columns.push({
-    //     title: '操作',
-    //     dataIndex: 'operation',
-    //     render: (text, record) => 
-    //       this.state.fieldMappingList.length >= 1 ? (
-    //         <Popconfirm title="确认删除吗?" onConfirm={() => this.handleDelete(record.key)}>
-    //           <a>删除</a>
-    //         </Popconfirm>
-    //       ) : null
-    //     ,
-    //   });
-    // }
+    if (!this.state.readonly) {
+      this.columns.push({
+        title: '操作',
+        dataIndex: 'operation',
+        render: (text, record) =>
+          this.state.filters.length >= 1 ? (
+            <Popconfirm title="确认删除吗?" onConfirm={() => this.handleDelete(record.key)}>
+              <a>删除</a>
+            </Popconfirm>
+          ) : null
+        ,
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-
-    const fieldMappings = [];
-
-    const { dataFieldList, initFieldMappings } = nextProps;
-    if (dataFieldList) {
-      dataFieldList.map(dataField => {
-        const mapping = {
-          key: dataField.fieldCode
-          , dataFieldCode: dataField.fieldCode
-          , dataFieldName: dataField.fieldName
-          , apiFieldCode: (initFieldMappings ? (initFieldMappings[dataField.fieldCode] ? initFieldMappings[dataField.fieldCode] : null) : null)
-        };
-
-        fieldMappings.push(mapping);
-      });
+    let { filters } = nextProps;
+    if (filters) {
+    } else {
+      filters = [];
     }
 
     this.setState({
-      fieldMappings: fieldMappings,
-      count: fieldMappings.length,
+      filters: filters,
+      count: filters.length,
       readonly: nextProps.readonly ? nextProps.readonly : false,
     });
   }
 
   componentWillUnmount() {
-    this.setState({ fieldMappings: [], count: 0 });
+    this.setState({ filters: [], count: 0 });
   }
 
-  // handleAdd = () => {
-  //   const { count, fieldMappings } = this.state;
-  //   const newDataField = {
-  //     id: '',
-  //     fieldCode: '',
-  //     fieldName: '',
-  //     isId: 0,
-  //     key: count,
-  //   };
-  //   this.setState({
-  //     fieldMappings: [...fieldMappings, newDataField],
-  //     count: count + 1,
-  //   });
+  handleAdd = () => {
+    const { count, filters } = this.state;
+    const newFilter = {
+      k: '',
+      op: '',
+      v: '',
+      key: count,
+    };
+    this.setState({
+      filters: [...filters, newFilter],
+      count: count + 1,
+    });
 
-  //   this.props.handleSave(newDataField);
-  // };
+    this.props.handleSave(newFilter);
+  };
 
   handleSave = (key, dataIndex, value) => {
-    const newData = [...this.state.fieldMappings];
+    const newData = [...this.state.filters];
     const index = newData.findIndex(item => key === item.key);
     const item = newData[index];
     item[dataIndex] = value;
@@ -207,17 +200,25 @@ class TaskFieldMappingTable extends React.Component {
     //   ...item,
     //   ...row,
     // });
-    this.setState({ fieldMappings: newData });
+    this.setState({ filters: newData });
 
     this.props.handleSave(item);
+
+    
+    console.info("key = " + key);
+    console.info("dataIndex = " + dataIndex);
+    console.info("value = " + value);
+
+    this.state.filters.map(f => {
+      console.info(f.k + " " + f.op + " " + f.v);
+    });
   };
 
-  // handleDelete = key => {
-  //   const fieldMappings = [...this.state.fieldMappings];
-  //   this.setState({ fieldMappings: fieldMappings.filter(item => item.key !== key) });
-
-  //   this.props.handleDelete(key);
-  // };
+  handleDelete = key => {
+    const filters = [...this.state.filters];
+    this.setState({ filters: filters.filter(item => item.key !== key) });
+    this.props.handleDelete(key);
+  };
 
   render() {
 
@@ -240,21 +241,21 @@ class TaskFieldMappingTable extends React.Component {
           dataIndex: col.dataIndex,
           title: col.title,
           handleSave: this.handleSave,
-          inputType: col.dataIndex === 'isId' ? 'switch' : 'text',
+          inputType: col.dataIndex === 'op' ? 'select' : 'text',
         }),
       };
     });
 
     return (
       <div>
-        {/* <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16, display: this.state.readonly ? 'none' : 'block' }}>
-          添加字段
-        </Button> */}
+        <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16, display: this.state.readonly ? 'none' : 'block' }}>
+          添加条件
+        </Button>
         <Table
           components={components}
           rowClassName={() => { style.editableRow }}
           bordered
-          dataSource={this.state.fieldMappings}
+          dataSource={this.state.filters}
           columns={columns}
           pagination={{
             onChange: this.cancel,
@@ -266,4 +267,4 @@ class TaskFieldMappingTable extends React.Component {
   }
 }
 
-export default TaskFieldMappingTable;
+export default TaskDataFilterTable;

@@ -26,20 +26,20 @@ const plugins = [
       },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : {},
       ...(!process.env.TEST && os.platform() === 'darwin'
         ? {
-            dll: {
-              include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
-              exclude: ['@babel/runtime'],
-            },
-            hardSource: false,
-          }
+          dll: {
+            include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
+            exclude: ['@babel/runtime'],
+          },
+          hardSource: false,
+        }
         : {}),
     },
   ],
@@ -57,11 +57,11 @@ if (process.env.APP_TYPE === 'site') {
 }
 
 const serveUrlMap = {
-  dev: 'http://192.168.1.100:8000',
+  dev: 'http://dev.mydata.com:8000',
   test: 'http://demo.mydata.work',
   prod: 'http://192.168.1.100:8000',
 };
- 
+
 const { SERVE_ENV = 'prod' } = process.env;
 
 export default {
@@ -92,9 +92,9 @@ export default {
     //   pathRewrite: { '^/api': '' },
     // },
     '/api': {
-      target: serveUrlMap['test'],
+      target: serveUrlMap['dev'],
       changeOrigin: true,
-      // pathRewrite: { '^/api': '' },
+      pathRewrite: { '^/api': '' },
     },
   },
   ignoreMomentLocale: true,

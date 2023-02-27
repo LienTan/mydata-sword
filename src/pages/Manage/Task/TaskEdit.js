@@ -6,6 +6,7 @@ import styles from '../../../layouts/Sword.less';
 import { TASK_DETAIL, TASK_SUBMIT, TASK_INIT, TASK_SUBSCRIBED, TASK_TYPE_PRODUCER } from '../../../actions/task';
 import TaskFieldMappingTable from './TaskFieldMappingTable';
 import { dataFields } from '../../../services/data';
+import TaskDataFilterTable from './TaskDataFilterTable';
 
 const FormItem = Form.Item;
 
@@ -15,7 +16,7 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class TaskEdit extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       initStatus: false,
@@ -31,6 +32,7 @@ class TaskEdit extends PureComponent {
 
       dataFieldList: [],
       fieldMappings: {},
+      filters: [],
 
       isShowSubscribed: false,
       isShowTaskPeriod: true,
@@ -57,31 +59,32 @@ class TaskEdit extends PureComponent {
     } = nextProps;
 
     this.setState({
-      envList : envList,
-      apiList : apiList,
+      envList: envList,
+      apiList: apiList,
     });
 
     const { initStatus, apiUrl, opType } = this.state;
 
-    if(!initStatus && detail.id){
+    if (!initStatus && detail.id) {
       this.loadDataFieldList(detail.dataId);
       this.setState({
         fieldMappings: detail.fieldMapping,
         isShowSubscribed: detail.opType != TASK_TYPE_PRODUCER,
         isShowTaskPeriod: detail.isSubscribed != TASK_SUBSCRIBED,
         initStatus: true,
+        filters: detail.dataFilter,
       });
     }
 
-    if(!apiUrl){
-      this.setState({apiUrl : detail.apiUrl});
+    if (!apiUrl) {
+      this.setState({ apiUrl: detail.apiUrl });
       this.findEnv(detail.envId);
     }
-    if(!opType){
-      this.setState({opType : detail.opType == 1 ? "提供数据" : "消费数据"});
+    if (!opType) {
+      this.setState({ opType: detail.opType == 1 ? "提供数据" : "消费数据" });
       this.findApi(detail.apiId);
     }
-    
+
   }
 
   findEnv(envId) {
@@ -107,54 +110,54 @@ class TaskEdit extends PureComponent {
 
   handleChangeApi = apiId => {
     const api = this.findApi(apiId);
-    if(api){
+    if (api) {
       this.state.opType = api.opType == 1 ? "提供数据" : "消费数据";
-    }else{
+    } else {
       this.state.opType = "";
     }
     this.updateApiUrl();
 
     const opType = api.opType;
-    if(opType == TASK_TYPE_PRODUCER){
+    if (opType == TASK_TYPE_PRODUCER) {
       // 提供数据
       this.setState({ isShowSubscribed: false, isShowTaskPeriod: true });
-    }else{
+    } else {
       // 消费数据
       this.setState({ isShowSubscribed: true, isShowTaskPeriod: false });
     }
   }
 
-  updateApiUrl(){
+  updateApiUrl() {
     const { form } = this.props;
-    let {currentEnv, currentApi} = this.state;
-    if(currentEnv == null){
+    let { currentEnv, currentApi } = this.state;
+    if (currentEnv == null) {
       const envId = form.getFieldValue("envId");
       currentEnv = this.findEnv(envId);
     }
-    if(currentApi == null){
+    if (currentApi == null) {
       const appApiId = form.getFieldValue("apiId");
       currentApi = this.findApi(appApiId);
     }
 
     let apiUrl = '';
 
-    if(currentEnv != null && currentApi != null){
+    if (currentEnv != null && currentApi != null) {
       apiUrl = currentEnv.envPrefix + currentApi.apiUri;
     }
 
-    this.setState({apiUrl});
+    this.setState({ apiUrl });
   }
 
   async loadDataFieldList(dataId) {
-    const dataFieldResponse = await dataFields({dataId: dataId});
-    if(dataFieldResponse.success){
-      this.setState({dataFieldList: dataFieldResponse.data});
+    const dataFieldResponse = await dataFields({ dataId: dataId });
+    if (dataFieldResponse.success) {
+      this.setState({ dataFieldList: dataFieldResponse.data });
     }
   }
 
   handleChangeData = dataId => {
-    if(!dataId){
-      this.setState({dataFieldList: []});
+    if (!dataId) {
+      this.setState({ dataFieldList: [] });
       return;
     }
     this.loadDataFieldList(dataId);
@@ -163,7 +166,7 @@ class TaskEdit extends PureComponent {
   handleSaveMapping = mapping => {
     const { fieldMappings } = this.state;
     const key = mapping.dataFieldCode;
-    if(key){
+    if (key) {
       fieldMappings[key] = mapping.apiFieldCode;
     }
   };
@@ -184,6 +187,7 @@ class TaskEdit extends PureComponent {
           ...values,
         };
         params.fieldMapping = this.state.fieldMappings;
+        params.dataFilter = this.state.filters;
         dispatch(TASK_SUBMIT(params));
       }
     });
@@ -191,13 +195,34 @@ class TaskEdit extends PureComponent {
 
   handleChangeSubscribed = e => {
     const targetValue = e.target.value;
-    if(targetValue == TASK_SUBSCRIBED){
+    if (targetValue == TASK_SUBSCRIBED) {
       // 订阅
       this.setState({ isShowTaskPeriod: false });
-    }else{
+    } else {
       // 不订阅
       this.setState({ isShowTaskPeriod: true });
     }
+  };
+
+  handleSaveFilter = filter => {
+    const newData = [...this.state.filters];
+    const index = newData.findIndex(item => filter.key === item.key);
+    if (index > -1) {
+      const item = newData[index];
+      newData.splice(index, 1, {
+        ...item,
+        ...filter,
+      });
+      this.setState({ filters: newData });
+    } else {
+      newData.push(filter);
+      this.setState({ filters: newData });
+    }
+  };
+
+  handleDeleteFilter = key => {
+    const filters = [...this.state.filters];
+    this.setState({ filters: filters.filter(item => item.key !== key) });
   };
 
   render() {
@@ -206,7 +231,7 @@ class TaskEdit extends PureComponent {
       task: { detail },
       submitting,
       task: {
-        init : { envList, apiList, dataList },
+        init: { envList, apiList, dataList },
       },
     } = this.props;
 
@@ -234,7 +259,7 @@ class TaskEdit extends PureComponent {
       <Panel title="修改" back="/manage/task" action={action}>
         <Form hideRequiredMark style={{ marginTop: 8 }}>
           <Card className={styles.card} bordered={false}>
-          <FormItem {...formItemLayout} label="任务名称">
+            <FormItem {...formItemLayout} label="任务名称">
               {getFieldDecorator('taskName', {
                 rules: [
                   {
@@ -256,11 +281,11 @@ class TaskEdit extends PureComponent {
                 initialValue: detail.envId,
               })(
                 <Select allowClear placeholder="请选择所属环境" onChange={this.handleChangeEnv}>
-                  {envList.map(e =>(
-                  <Select.Option key={e.id} value={e.id}>
-                    {e.envName} ({e.envPrefix})
-                  </Select.Option>
-                ))}
+                  {envList.map(e => (
+                    <Select.Option key={e.id} value={e.id}>
+                      {e.envName} ({e.envPrefix})
+                    </Select.Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
@@ -275,11 +300,11 @@ class TaskEdit extends PureComponent {
                 initialValue: detail.apiId,
               })(
                 <Select allowClear placeholder="请选择API" onChange={this.handleChangeApi}>
-                  {apiList.map(a =>(
-                  <Select.Option key={a.id} value={a.id}>
-                    {a.apiName} ({a.apiUri})
-                  </Select.Option>
-                ))}
+                  {apiList.map(a => (
+                    <Select.Option key={a.id} value={a.id}>
+                      {a.apiName} ({a.apiUri})
+                    </Select.Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
@@ -300,16 +325,16 @@ class TaskEdit extends PureComponent {
                 initialValue: detail.dataId,
               })(
                 <Select allowClear placeholder="请选择数据项" onChange={this.handleChangeData}>
-                  {dataList.map(d =>(
-                  <Select.Option key={d.id} value={d.id}>
-                    {d.dataCode} - {d.dataName}
-                  </Select.Option>
-                ))}
+                  {dataList.map(d => (
+                    <Select.Option key={d.id} value={d.id}>
+                      {d.dataCode} - {d.dataName}
+                    </Select.Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
 
-            { this.state.isShowSubscribed && (<FormItem {...formItemLayout} label="订阅数据" extra="订阅模式：区别于定时模式，只当有数据发生变化时才推送消费；">
+            {this.state.isShowSubscribed && (<FormItem {...formItemLayout} label="订阅数据" extra="订阅模式：区别于定时模式，只当有数据发生变化时才推送消费；">
               {getFieldDecorator('isSubscribed', {
                 rules: [
                   {
@@ -319,7 +344,7 @@ class TaskEdit extends PureComponent {
                 ],
                 initialValue: detail.isSubscribed,
               })(
-              // <Input placeholder="请输入是否为订阅任务：0-不订阅，1-订阅" />
+                // <Input placeholder="请输入是否为订阅任务：0-不订阅，1-订阅" />
                 <Radio.Group buttonStyle="solid" onChange={this.handleChangeSubscribed}>
                   <Radio.Button value={1}>订阅</Radio.Button>
                   <Radio.Button value={0}>不订阅</Radio.Button>
@@ -327,7 +352,7 @@ class TaskEdit extends PureComponent {
               )}
             </FormItem>)}
 
-            { this.state.isShowTaskPeriod && (<FormItem {...formItemLayout} label="任务周期">
+            {this.state.isShowTaskPeriod && (<FormItem {...formItemLayout} label="任务周期">
               {getFieldDecorator('taskPeriod', {
                 rules: [
                   {
@@ -364,11 +389,18 @@ class TaskEdit extends PureComponent {
               })(<Input placeholder="请输入JSON字段层级前缀" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="字段映射">
-                <TaskFieldMappingTable
-                  dataFieldList={this.state.dataFieldList}
-                  handleSave={this.handleSaveMapping}
-                  initFieldMappings={detail.fieldMapping}
-                />
+              <TaskFieldMappingTable
+                dataFieldList={this.state.dataFieldList}
+                handleSave={this.handleSaveMapping}
+                initFieldMappings={detail.fieldMapping}
+              />
+            </FormItem>
+            <FormItem {...formItemLayout} label="数据过滤条件">
+              <TaskDataFilterTable
+                filters={this.state.filters}
+                handleSave={this.handleSaveFilter}
+                handleDelete={this.handleDeleteFilter}
+              />
             </FormItem>
           </Card>
         </Form>

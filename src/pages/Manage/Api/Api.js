@@ -56,7 +56,7 @@ class Api extends PureComponent {
       okType: 'danger',
       cancelText: '取消',
       async onOk() {
-        const response = await syncTask({id : id});
+        const response = await syncTask({ id: id });
         if (response.success) {
           message.success(response.msg);
           dispatch(API_LIST());
@@ -64,7 +64,7 @@ class Api extends PureComponent {
           message.error(response.msg || '更新任务失败！');
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -78,6 +78,14 @@ class Api extends PureComponent {
     } = this.props;
 
     const columns = [
+      {
+        title: '应用',
+        dataIndex: 'appId',
+        render: (text, record) => {
+          const { appCode, appName } = record;
+          return `${appName} (${appCode})`;
+        },
+      },
       {
         title: 'API名称',
         dataIndex: 'apiName',
@@ -109,12 +117,12 @@ class Api extends PureComponent {
         title: '同步任务时间',
         dataIndex: 'syncTaskTime',
         render: (text, record, index) => {
-          const {id, syncTaskTime, updateTime} = record;
+          const { id, syncTaskTime, updateTime } = record;
           let color = 'green';
-          if(syncTaskTime == ""){
+          if (syncTaskTime == "") {
             color = 'gray'
           }
-          else if(syncTaskTime < updateTime){
+          else if (syncTaskTime < updateTime) {
             color = 'red';
           }
           return <>

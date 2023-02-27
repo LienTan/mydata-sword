@@ -13,9 +13,9 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 class DataAdd extends PureComponent {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state = {dataFields:[]};
+    this.state = { dataFields: [] };
   }
 
   handleSubmit = e => {
@@ -43,7 +43,7 @@ class DataAdd extends PureComponent {
         ...field,
       });
       this.setState({ dataFields: newData });
-    }else {
+    } else {
       newData.push(field);
       this.setState({ dataFields: newData });
     }
@@ -104,8 +104,8 @@ class DataAdd extends PureComponent {
             </FormItem>
             <FormItem {...formItemLayout} label="字段">
               <EditableTable
-                dataFields={this.state.dataFields} 
-                handleSave={this.handleSaveField} 
+                dataFields={this.state.dataFields}
+                handleSave={this.handleSaveField}
                 handleDelete={this.handleDeleteField}
               />
             </FormItem>

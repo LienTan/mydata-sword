@@ -18,7 +18,8 @@ export default [
     authority: ['administrator', 'admin', 'user', 'test', 'guest'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard/workplace' },
+      //{ path: '/', redirect: '/dashboard/workplace' },
+      { path: '/', redirect: '/manage/workplace' },
       {
         path: '/result',
         routes: [
@@ -295,6 +296,9 @@ export default [
         path: '/manage',
         routes: [
           {
+            path: '/manage/workplace', component: './Manage/Dashboard/Workplace'
+          },
+          {
             path: '/manage/data',
             routes: [
               { path: '/manage/data', redirect: '/manage/data/list' },
@@ -302,6 +306,16 @@ export default [
               { path: '/manage/data/add', component: './Manage/Data/DataAdd' },
               { path: '/manage/data/edit/:id', component: './Manage/Data/DataEdit' },
               { path: '/manage/data/view/:id', component: './Manage/Data/DataView' },
+            ],
+          },
+          {
+            path: '/manage/app',
+            routes: [
+              { path: '/manage/app', redirect: '/manage/app/list' },
+              { path: '/manage/app/list', component: './Manage/App/App' },
+              { path: '/manage/app/add', component: './Manage/App/AppAdd' },
+              { path: '/manage/app/edit/:id', component: './Manage/App/AppEdit' },
+              { path: '/manage/app/view/:id', component: './Manage/App/AppView' },
             ],
           },
           {

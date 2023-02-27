@@ -1,4 +1,4 @@
-import { Form, Input, Button, Table, Switch,Popconfirm } from 'antd';
+import { Form, Input, Button, Table, Switch, Popconfirm } from 'antd';
 import style from './StandardData.less';
 
 const EditableContext = React.createContext();
@@ -10,11 +10,11 @@ const EditableRow = ({ form, index, ...props }) => (
 const EditableFormRow = Form.create()(EditableRow);
 
 class EditableCell extends React.Component {
-//   state = {
-//     editing: false,
-//   };
+  //   state = {
+  //     editing: false,
+  //   };
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = { editing: props.editable };
   }
@@ -43,10 +43,10 @@ class EditableCell extends React.Component {
   };
 
   handleSwitchIsId = () => {
-    const {record, handleSwitchIsId} = this.props;
-    if(record.isId == 1){
+    const { record, handleSwitchIsId } = this.props;
+    if (record.isId == 1) {
       record.isId = 0;
-    }else{
+    } else {
       record.isId = 1;
     }
     handleSwitchIsId(record.key, record.isId);
@@ -55,8 +55,8 @@ class EditableCell extends React.Component {
   getInput = () => {
     if (this.props.inputType === 'number') {
       return <InputNumber />;
-    }else if(this.props.inputType === 'switch'){
-      return <Switch ref={node => (this.input = node)} checked={this.props.record.isId == 1} checkedChildren="是" unCheckedChildren="否" onClick={()=>this.handleSwitchIsId()} />
+    } else if (this.props.inputType === 'switch') {
+      return <Switch ref={node => (this.input = node)} checked={this.props.record.isId == 1} checkedChildren="是" unCheckedChildren="否" onClick={() => this.handleSwitchIsId()} />
     }
     return <Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} placeholder={`请输入${this.props.title}`} />;
   };
@@ -76,8 +76,8 @@ class EditableCell extends React.Component {
           ],
           initialValue: record[dataIndex],
         })(
-        // <Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />
-        this.getInput()
+          // <Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />
+          this.getInput()
         )}
       </Form.Item>
     ) : (
@@ -115,13 +115,13 @@ class EditableCell extends React.Component {
 }
 
 class EditableTable extends React.Component {
-  
-  constructor(props){
+
+  constructor(props) {
     super(props);
-    this.state = { 
-      dataFields:[], 
-      count: 0, 
-      readonly : props.readonly ? props.readonly : false
+    this.state = {
+      dataFields: [],
+      count: 0,
+      readonly: props.readonly ? props.readonly : false
     };
 
     this.columns = [
@@ -148,11 +148,11 @@ class EditableTable extends React.Component {
       },
     ];
 
-    if(!this.state.readonly){
+    if (!this.state.readonly) {
       this.columns.push({
         title: '操作',
         dataIndex: 'operation',
-        render: (text, record) => 
+        render: (text, record) =>
           this.state.dataFields.length >= 1 ? (
             <Popconfirm title="确认删除吗?" onConfirm={() => this.handleDelete(record.key)}>
               <a>删除</a>
@@ -165,24 +165,24 @@ class EditableTable extends React.Component {
 
   componentWillReceiveProps(nextProps) {
 
-    let {dataFields} = nextProps;
-    if(dataFields){
+    let { dataFields } = nextProps;
+    if (dataFields) {
       dataFields.map(field => {
         field.key = field.id;
       });
-    }else{
+    } else {
       dataFields = [];
     }
 
     this.setState({
       dataFields: dataFields,
       count: dataFields.length,
-      readonly : nextProps.readonly ? nextProps.readonly : false,
+      readonly: nextProps.readonly ? nextProps.readonly : false,
     });
   }
 
-  componentWillUnmount(){
-    this.setState({ dataFields:[], count: 0 });
+  componentWillUnmount() {
+    this.setState({ dataFields: [], count: 0 });
   }
 
   handleAdd = () => {
@@ -224,16 +224,16 @@ class EditableTable extends React.Component {
   };
 
   handleSwitchIsId = (key, isId) => {
-    if(isId == 0){
+    if (isId == 0) {
       return;
     }
-    const {dataFields} = this.state;
+    const { dataFields } = this.state;
     dataFields.map(field => {
-      if(field.key != key){
+      if (field.key != key) {
         field.isId = 0;
       }
     });
-    this.setState({dataFields});
+    this.setState({ dataFields });
   }
 
   render() {
@@ -245,7 +245,7 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-    
+
     const columns = this.columns.map(col => {
       if (!col.editable) {
         return col;
@@ -263,7 +263,7 @@ class EditableTable extends React.Component {
         }),
       };
     });
-    
+
     return (
       <div>
         <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16, display: this.state.readonly ? 'none' : 'block' }}>
@@ -271,7 +271,7 @@ class EditableTable extends React.Component {
         </Button>
         <Table
           components={components}
-          rowClassName={() => {style.editableRow}}
+          rowClassName={() => { style.editableRow }}
           bordered
           dataSource={this.state.dataFields}
           columns={columns}
